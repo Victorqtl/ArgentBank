@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 export const metadata: Metadata = {
 	title: 'ArgentBank - Home Page',
@@ -16,13 +18,15 @@ export default function RootLayout({
 	return (
 		<html lang='fr'>
 			<body>
-				<header>
-					<Header />
-				</header>
-				{children}
-				<footer className='flex justify-center border-t-2 border-[#ccc] py-8'>
-					<Footer />
-				</footer>
+				<Provider store={store}>
+					<header>
+						<Header />
+					</header>
+					{children}
+					<footer className='flex justify-center border-t-2 border-[#ccc] py-8'>
+						<Footer />
+					</footer>
+				</Provider>
 			</body>
 		</html>
 	);
