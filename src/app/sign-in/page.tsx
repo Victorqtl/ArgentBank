@@ -1,6 +1,29 @@
-import { CircleUserRound } from 'lucide-react';
+'use client';
 
-export default function page() {
+import { CircleUserRound } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { useLoginMutation } from '@/lib/features/authAPI';
+import { setToken } from '@/lib/features/authSlice';
+import { useState } from 'react';
+
+export default function Page(): JSX.Element {
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+
+	const dispatch = useDispatch();
+
+	const [login, { isLoading }] = useLoginMutation();
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			const response = await login({ email, password }).unwrap();
+			dispatch(setToken(response.body.token));
+		} catch (err) {
+			console.error('Login failed', err);
+			alert('Invalid credentials');
+		}
+	};
 	return (
 		<section className='w-[332px] m-[0_auto] mt-12 p-8 bg-white'>
 			<CircleUserRound
@@ -8,7 +31,7 @@ export default function page() {
 				className='m-[0_auto]'
 			/>
 			<h1 className='my-5 text-center font-bold text-2xl'>Sign In</h1>
-			<form>
+			<form onSubmit={handleSubmit}>
 				<div className='flex flex-col mb-4'>
 					<label
 						htmlFor='username'
@@ -16,6 +39,7 @@ export default function page() {
 						Username
 					</label>
 					<input
+						onChange={e => setEmail(e.target.value)}
 						type='text'
 						id='username'
 						placeholder='employee@test.tld'
@@ -29,6 +53,7 @@ export default function page() {
 						Password
 					</label>
 					<input
+						onChange={e => setPassword(e.target.value)}
 						type='password'
 						id='password'
 						placeholder='••••••••'
@@ -44,6 +69,7 @@ export default function page() {
 				</div>
 				<button
 					type='submit'
+					disabled={isLoading}
 					className='w-full mt-4 p-2 text-[18px] font-bold bg-[#00BC77] text-white underline'>
 					Sign In
 				</button>

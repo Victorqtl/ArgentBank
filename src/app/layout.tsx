@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Provider } from 'react-redux';
-import { store } from './store';
+import { StoreProvider } from './StoreProvider';
 
 export const metadata: Metadata = {
 	title: 'ArgentBank - Home Page',
@@ -16,9 +15,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang='fr'>
-			<body>
-				<Provider store={store}>
+		<StoreProvider>
+			<html lang='fr'>
+				<body>
 					<header>
 						<Header />
 					</header>
@@ -26,8 +25,8 @@ export default function RootLayout({
 					<footer className='flex justify-center border-t-2 border-[#ccc] py-8'>
 						<Footer />
 					</footer>
-				</Provider>
-			</body>
-		</html>
+				</body>
+			</html>
+		</StoreProvider>
 	);
 }
