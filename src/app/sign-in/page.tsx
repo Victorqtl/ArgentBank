@@ -5,12 +5,14 @@ import { useDispatch } from 'react-redux';
 import { useLoginMutation } from '@/lib/features/authAPI';
 import { setToken } from '@/lib/features/authSlice';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page(): JSX.Element {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
 	const dispatch = useDispatch();
+	const router = useRouter();
 
 	const [login, { isLoading }] = useLoginMutation();
 
@@ -19,11 +21,13 @@ export default function Page(): JSX.Element {
 		try {
 			const response = await login({ email, password }).unwrap();
 			dispatch(setToken(response.body.token));
+			router.push('/dashboard');
 		} catch (err) {
 			console.error('Login failed', err);
 			alert('Invalid credentials');
 		}
 	};
+
 	return (
 		<section className='w-[332px] m-[0_auto] mt-12 p-8 bg-white'>
 			<CircleUserRound

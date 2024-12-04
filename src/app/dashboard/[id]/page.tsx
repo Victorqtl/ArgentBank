@@ -1,10 +1,25 @@
-export default function Page() {
+'use client';
+import { usePathname } from 'next/navigation';
+import { useFetchUserProfileQuery } from '@/lib/features/authAPI';
+
+export default function Page(): JSX.Element {
+	const pathname = usePathname();
+	const { data } = useFetchUserProfileQuery();
+	console.log(data);
+
+	const pathSegments = pathname.split('/');
+	const userId = pathSegments[pathSegments.length - 1];
+
+	if (!userId || !data) {
+		return <div>Erreur</div>;
+	}
+
 	return (
 		<>
 			<div className='flex flex-col items-center mb-8 text-white'>
 				<h1 className='my-8 text-center text-[32px] font-bold'>
 					Welcome back <br />
-					Tony Jarvis!
+					{data?.body.firstName} {data?.body.lastName}
 				</h1>
 				<button className='p-[10px] font-bold bg-[#00BC77]'>Edit Name</button>
 			</div>

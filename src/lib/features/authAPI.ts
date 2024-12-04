@@ -13,10 +13,12 @@ interface LoginRequest {
 }
 
 interface UserProfile {
-        id: number;
-        username: string;
-        password: string;
+        body : {
+        id: string;
         email : string;
+        firstName: string;
+        lastName: string;
+    }
 }
 
 interface updateUsername {
@@ -28,11 +30,13 @@ const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3001/api/v1/',
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).auth.token;
+        console.log("Token récupéré dans le state :", token);
         if (token) {
             headers.set('Authorization', `Bearer ${token}`);
+
         }
         return headers
-    }
+    },
 })
 
 export const authApi = createApi({
@@ -47,7 +51,10 @@ export const authApi = createApi({
             })
         }),
         fetchUserProfile: builder.query<UserProfile, void>({
-            query: () => 'user/profile',
+            query: () => ({
+                url: 'user/profile',
+                method: 'POST'
+            })
         }),
         updateUsername: builder.mutation<void, updateUsername>({
             query: (updateData) => ({
