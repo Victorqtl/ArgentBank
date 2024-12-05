@@ -30,21 +30,27 @@ export default function Header() {
 					alt='Argent Bank Logo'
 				/>
 			</Link>
-			<div>
+			<div className='flex gap-1'>
+				<CircleUserRound color='#2C3E50' />
 				{!data ? (
 					<Link
 						className='flex gap-1 mr-2 font-bold'
 						href='/sign-in'>
-						<CircleUserRound color='#2C3E50' />
 						Sign In
 					</Link>
 				) : (
-					<button
-						className='flex gap-1 mr-2 font-bold'
-						onClick={handleLogout}>
-						<CircleUserRound color='#2C3E50' />
-						Sign Out
-					</button>
+					<div className='flex gap-2'>
+						<Link
+							href={`/dashboard/${data.body.id}`}
+							className='font-bold'>
+							Dashboard
+						</Link>
+						<button
+							className='flex gap-1 mr-2 font-bold'
+							onClick={handleLogout}>
+							Sign Out
+						</button>
+					</div>
 				)}
 			</div>
 		</nav>

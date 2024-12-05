@@ -4,17 +4,26 @@ import { CircleUserRound } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { useLoginMutation } from '@/lib/features/authAPI';
 import { setToken } from '@/lib/features/authSlice';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { redirect, useRouter } from 'next/navigation';
+import { useFetchUserProfileQuery } from '@/lib/features/authAPI';
 
 export default function Page(): JSX.Element {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const { data } = useFetchUserProfileQuery();
+	console.log(data);
 
 	const dispatch = useDispatch();
 	const router = useRouter();
 
 	const [login, { isLoading }] = useLoginMutation();
+
+	useEffect(() => {
+		if (data) {
+			redirect('/');
+		}
+	}, [data]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -24,7 +33,6 @@ export default function Page(): JSX.Element {
 			router.push('/dashboard');
 		} catch (err) {
 			console.error('Login failed', err);
-			alert('Invalid credentials');
 		}
 	};
 
