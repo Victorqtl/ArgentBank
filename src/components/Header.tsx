@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import logo from '../assets/argentBankLogo.png';
+import { LogOut } from 'lucide-react';
 import { CircleUserRound } from 'lucide-react';
 import { authApi } from '@/lib/features/authAPI';
 import { useDispatch } from 'react-redux';
@@ -30,29 +31,30 @@ export default function Header() {
 					alt='Argent Bank Logo'
 				/>
 			</Link>
-			<div className='flex gap-1'>
-				<CircleUserRound color='#2C3E50' />
-				{!data ? (
+
+			{!data ? (
+				<Link
+					className='flex gap-1 mr-2 font-bold'
+					href='/sign-in'>
+					<CircleUserRound color='#2C3E50' />
+					Sign In
+				</Link>
+			) : (
+				<div className='flex items-center gap-2 lg:gap-4'>
 					<Link
-						className='flex gap-1 mr-2 font-bold'
-						href='/sign-in'>
-						Sign In
+						href={`/dashboard/${data.body.id}`}
+						className='flex gap-1 font-bold lg:gap-2'>
+						<CircleUserRound color='#2C3E50' />
+						{data.body.firstName}
 					</Link>
-				) : (
-					<div className='flex gap-2'>
-						<Link
-							href={`/dashboard/${data.body.id}`}
-							className='font-bold'>
-							Dashboard
-						</Link>
-						<button
-							className='flex gap-1 mr-2 font-bold'
-							onClick={handleLogout}>
-							Sign Out
-						</button>
-					</div>
-				)}
-			</div>
+					<button
+						className='flex gap-1 mr-2 font-bold lg:gap-2'
+						onClick={handleLogout}>
+						<LogOut />
+						Sign Out
+					</button>
+				</div>
+			)}
 		</nav>
 	);
 }
