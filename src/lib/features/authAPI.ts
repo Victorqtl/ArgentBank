@@ -30,7 +30,6 @@ const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3001/api/v1/',
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).auth.token;
-        console.log("Token récupéré dans le state :", token);
         if (token) {
             headers.set('Authorization', `Bearer ${token}`);
 
@@ -63,12 +62,6 @@ export const authApi = createApi({
                 body: updateData,
             })
         }),
-        logout: builder.mutation<void, void>({
-            query: () => ({
-                url: 'user/logout',
-                method: 'POST'
-            })
-        })
     })
 })
 
@@ -76,5 +69,4 @@ export const {
     useLoginMutation,
     useFetchUserProfileQuery,
     useUpdateUsernameMutation,
-    useLogoutMutation
 } = authApi

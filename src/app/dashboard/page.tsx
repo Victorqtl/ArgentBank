@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 export default function Page(): JSX.Element {
 	const router = useRouter();
 	const { data, error, isLoading } = useFetchUserProfileQuery();
-	console.log(data);
 
 	useEffect(() => {
 		if (data?.body.id) {

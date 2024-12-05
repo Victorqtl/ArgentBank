@@ -5,12 +5,11 @@ import { useFetchUserProfileQuery } from '@/lib/features/authAPI';
 export default function Page(): JSX.Element {
 	const pathname = usePathname();
 	const { data } = useFetchUserProfileQuery();
-	console.log(data);
 
 	const pathSegments = pathname.split('/');
-	const userId = pathSegments[pathSegments.length - 1];
+	const userIdUrl = pathSegments[pathSegments.length - 1];
 
-	if (!userId || !data) {
+	if (userIdUrl !== data?.body.id || !data) {
 		return <div>Erreur</div>;
 	}
 
