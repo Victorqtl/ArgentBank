@@ -11,6 +11,13 @@ interface LoginRequest {
     password: string;
 }
 
+interface SignupRequest {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+}
+
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001/api/v1' }),
@@ -21,10 +28,18 @@ export const authApi = createApi({
                 method: 'POST',
                 body: credentials
             })
+        }),
+        signup: builder.mutation<void, SignupRequest>({
+            query : (data) => ({
+                url: 'user/signup',
+                method: 'POST',
+                body: data
+            })
         })
     })
 })
 
 export const {
     useLoginMutation,
+    useSignupMutation
 } = authApi

@@ -7,6 +7,7 @@ import { setToken } from '@/redux/features/auth/authSlice';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
 
 interface ProfileState {
 	body: {
@@ -24,6 +25,7 @@ export default function Page(): JSX.Element {
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [errorMessage, setErrorMessage] = useState(false);
 
 	const [login, { isLoading }] = useLoginMutation();
 
@@ -38,11 +40,13 @@ export default function Page(): JSX.Element {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
+			setErrorMessage(false);
 			const response = await login({ email, password }).unwrap();
 			dispatch(setToken(response.body.token));
 			router.push('/dashboard');
 		} catch (err) {
 			console.error('Login failed', err);
+			setErrorMessage(true);
 		}
 	};
 
@@ -53,7 +57,9 @@ export default function Page(): JSX.Element {
 				className='m-[0_auto]'
 			/>
 			<h1 className='my-5 text-center font-bold text-2xl'>Sign In</h1>
-			<form onSubmit={handleSubmit}>
+			<form
+				onSubmit={handleSubmit}
+				className='mb-4'>
 				<div className='flex flex-col mb-4'>
 					<label
 						htmlFor='username'
@@ -92,10 +98,16 @@ export default function Page(): JSX.Element {
 				<button
 					type='submit'
 					disabled={isLoading}
-					className='w-full mt-4 p-2 text-[18px] font-bold bg-[#00BC77] text-white underline'>
+					className='w-full mt-4 mb-1 p-2 text-[18px] font-bold bg-[#00BC77] text-white underline'>
 					Sign In
 				</button>
+				{errorMessage && <p className='text-red-700'>Incorect email or password</p>}
 			</form>
+			<Link
+				href='/sign-up'
+				className='underline'>
+				No account ? Sign Up
+			</Link>
 		</section>
 	);
 }
