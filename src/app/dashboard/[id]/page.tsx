@@ -1,52 +1,77 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import { useFetchUserProfileQuery } from '@/lib/features/authAPI';
-import { useUpdateUsernameMutation } from '@/lib/features/authAPI';
+import { useUpdateUsernameMutation } from '@/redux/features/profile/profileAPI';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { setProfile } from '@/redux/features/profile/profileSlice';
+
+interface ProfileState {
+	body: {
+		firstName: string;
+		lastName: string;
+		id: string;
+	};
+}
+
+interface RootState {
+	profile: ProfileState;
+}
 
 export default function Page(): JSX.Element {
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [showForm, setShowForm] = useState(false);
-	const [updateUsername] = useUpdateUsernameMutation();
 
 	const pathname = usePathname();
-	const { data } = useFetchUserProfileQuery();
-
 	const pathSegments = pathname.split('/');
 	const userIdUrl = pathSegments[pathSegments.length - 1];
 
-	if (userIdUrl !== data?.body.id || !data) {
-		return <div>Erreur</div>;
-	}
+	const dispatch = useDispatch();
 
-	const handleSubmit = async () => {
+	const { body } = useSelector((state: RootState) => state.profile);
+	console.log('body', body);
+
+	const [updateUsername] = useUpdateUsernameMutation();
+
+	useEffect(() => {
+		if (body) {
+			setFirstName(body.firstName);
+			setLastName(body.lastName);
+		}
+	}, [body]);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 		try {
-			await updateUsername({
-				firstName: firstName,
-				lastName: lastName,
+			const res = await updateUsername({
+				firstName,
+				lastName,
 			}).unwrap();
+			dispatch(setProfile(res.body));
 			setShowForm(false);
-			setFirstName('');
-			setLastName('');
 		} catch (err) {
 			console.error(err);
 		}
 	};
 
 	const handleCancel = () => {
-		setFirstName('');
-		setLastName('');
+		setFirstName(body?.firstName);
+		setLastName(body?.lastName);
 		setShowForm(false);
 	};
+
+	if (!body || userIdUrl !== body.id) {
+		return <div>Erreur</div>;
+	}
 
 	return (
 		<>
 			<div className='flex flex-col items-center mb-8 text-white'>
 				<h1 className='mt-8 text-center text-[32px] font-bold'>Welcome back</h1>
 				<div className={`${showForm ? 'hidden' : 'block'} mb-5 flex gap-2 text-[32px] font-bold`}>
-					<span>{data?.body.firstName}</span>
-					<span>{data?.body.lastName}</span>
+					<span>{body.firstName}</span>
+					<span>{body.lastName}</span>
 				</div>
 				<form
 					onSubmit={handleSubmit}
@@ -57,15 +82,13 @@ export default function Page(): JSX.Element {
 						<input
 							className='w-5/12 p-2 text-2xl'
 							type='text'
-							placeholder={data?.body.firstName}
-							value={firstName}
+							value={firstName || ''}
 							onChange={e => setFirstName(e.target.value)}
 						/>
 						<input
 							className='w-5/12 p-2 text-2xl'
 							type='text'
-							placeholder={data?.body.lastName}
-							value={lastName}
+							value={lastName || ''}
 							onChange={e => setLastName(e.target.value)}
 						/>
 					</div>

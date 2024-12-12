@@ -1,20 +1,22 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useFetchUserProfileQuery } from '@/lib/features/authAPI';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setProfile } from '@/redux/features/profile/profileSlice';
+import { useFetchUserProfileQuery } from '@/redux/features/profile/profileAPI';
 
 export default function Page(): JSX.Element {
 	const router = useRouter();
-	const { data, error, isLoading } = useFetchUserProfileQuery();
+	const dispatch = useDispatch();
+
+	const { data } = useFetchUserProfileQuery();
 
 	useEffect(() => {
-		if (data?.body.id) {
+		if (data?.body) {
+			dispatch(setProfile(data.body));
 			router.push(`/dashboard/${data.body.id}`);
 		}
-	}, [data, router]);
-
-	if (isLoading) return <p>Loading...</p>;
-	if (error) return <p>Error...</p>;
+	}, [data, dispatch, router]);
 
 	return <div></div>;
 }

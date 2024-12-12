@@ -2,28 +2,38 @@
 
 import { CircleUserRound } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { useLoginMutation } from '@/lib/features/authAPI';
-import { setToken } from '@/lib/features/authSlice';
+import { useLoginMutation } from '@/redux/features/auth/authAPI';
+import { setToken } from '@/redux/features/auth/authSlice';
 import { useEffect, useState } from 'react';
-import { redirect, useRouter } from 'next/navigation';
-import { useFetchUserProfileQuery } from '@/lib/features/authAPI';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+
+interface ProfileState {
+	body: {
+		id: string;
+	};
+}
+
+interface RootState {
+	profile: ProfileState;
+}
 
 export default function Page(): JSX.Element {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const { data } = useFetchUserProfileQuery();
-	console.log(data);
-
 	const dispatch = useDispatch();
 	const router = useRouter();
 
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+
 	const [login, { isLoading }] = useLoginMutation();
 
+	const { body } = useSelector((state: RootState) => state.profile);
+
 	useEffect(() => {
-		if (data) {
-			redirect('/');
+		if (body) {
+			router.push(`/dashboard/${body.id}`);
 		}
-	}, [data]);
+	}, [body, router]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

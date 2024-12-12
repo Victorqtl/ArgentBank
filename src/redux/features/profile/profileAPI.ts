@@ -1,16 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "../store";
-
-interface LoginResponse {
-    body: {
-        token: string;
-    }
-}
-
-interface LoginRequest {
-    email: string;
-    password: string;
-}
+import { RootState } from "@/redux/store";
 
 interface UserProfile {
         body : {
@@ -26,6 +15,15 @@ interface updateUsername {
     lastName: string;
 }
 
+interface updateUsernameResponse {
+    body: {
+        firstName: string
+        lastName: string
+        id: string;
+        email: string;
+    }
+}
+
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3001/api/v1/',
     prepareHeaders: (headers, { getState }) => {
@@ -38,24 +36,17 @@ const baseQuery = fetchBaseQuery({
     },
 })
 
-export const authApi = createApi({
-    reducerPath: 'authApi',
+export const profileApi = createApi({
+    reducerPath: 'profileApi',
     baseQuery,
     endpoints: (builder) => ({
-        login: builder.mutation<LoginResponse, LoginRequest>({
-            query : (credentials) => ({
-                url: 'user/login',
-                method: 'POST',
-                body: credentials
-            })
-        }),
         fetchUserProfile: builder.query<UserProfile, void>({
             query: () => ({
                 url: 'user/profile',
                 method: 'POST'
             })
         }),
-        updateUsername: builder.mutation<void, updateUsername>({
+        updateUsername: builder.mutation<updateUsernameResponse, updateUsername>({
             query: (updateData) => ({
                 url: 'user/profile',
                 method: 'PUT',
@@ -66,7 +57,6 @@ export const authApi = createApi({
 })
 
 export const {
-    useLoginMutation,
     useFetchUserProfileQuery,
     useUpdateUsernameMutation,
-} = authApi
+} = profileApi
