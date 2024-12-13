@@ -10,6 +10,7 @@ export default function Page(): JSX.Element {
 	const dispatch = useDispatch();
 
 	const { data } = useFetchUserProfileQuery();
+	console.log('data', data);
 
 	useEffect(() => {
 		if (data?.body) {

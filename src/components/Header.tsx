@@ -2,14 +2,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import logo from '../assets/argentBankLogo.png';
-import {LogOut} from 'lucide-react';
-import {CircleUserRound} from 'lucide-react';
-import {authApi} from '@/redux/features/auth/authAPI';
-import {useDispatch, useSelector} from 'react-redux';
-import {clearToken} from '@/redux/features/auth/authSlice';
-import {useRouter} from 'next/navigation';
-import {clearProfile} from '@/redux/features/profile/profileSlice';
-import {profileApi} from '@/redux/features/profile/profileAPI';
+import { LogOut } from 'lucide-react';
+import { CircleUserRound } from 'lucide-react';
+import { authApi } from '@/redux/features/auth/authAPI';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearToken } from '@/redux/features/auth/authSlice';
+import { useRouter } from 'next/navigation';
+import { clearProfile } from '@/redux/features/profile/profileSlice';
+import { profileApi } from '@/redux/features/profile/profileAPI';
 
 interface ProfileState {
 	body: {
@@ -26,8 +26,8 @@ export default function Header() {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
-	const {body} = useSelector((state: RootState) => state.profile);
-
+	const { body } = useSelector((state: RootState) => state.profile);
+	console.log('body', body);
 	const handleLogout = () => {
 		dispatch(authApi.util.resetApiState());
 		dispatch(clearToken());

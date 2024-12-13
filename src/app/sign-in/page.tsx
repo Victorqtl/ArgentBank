@@ -40,6 +40,10 @@ export default function Page(): JSX.Element {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
+			if (!email || !password) {
+				setErrorMessage(true);
+				return;
+			}
 			setErrorMessage(false);
 			const response = await login({ email, password }).unwrap();
 			dispatch(setToken(response.body.token));

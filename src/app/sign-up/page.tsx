@@ -1,7 +1,6 @@
 'use client';
 
 import { CircleUserRound } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useSignupMutation } from '@/redux/features/auth/authAPI';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -19,8 +18,7 @@ export default function Page() {
 		e.preventDefault();
 		try {
 			const res = await signup({ email, firstName, lastName, password }).unwrap();
-			console.log(res);
-			if (res) {
+			if (res !== null) {
 				setValidation(true);
 			}
 		} catch (err) {
