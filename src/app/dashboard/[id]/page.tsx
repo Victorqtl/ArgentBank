@@ -3,7 +3,6 @@ import { usePathname } from 'next/navigation';
 import { useUpdateUsernameMutation } from '@/redux/features/profile/profileAPI';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import { setProfile } from '@/redux/features/profile/profileSlice';
 
 interface ProfileState {
@@ -19,8 +18,10 @@ interface RootState {
 }
 
 export default function Page(): JSX.Element {
-	const [firstName, setFirstName] = useState('');
-	const [lastName, setLastName] = useState('');
+	const { body } = useSelector((state: RootState) => state.profile);
+
+	const [firstName, setFirstName] = useState(body?.firstName || '');
+	const [lastName, setLastName] = useState(body?.lastName || '');
 	const [showForm, setShowForm] = useState(false);
 
 	const pathname = usePathname();
@@ -29,17 +30,7 @@ export default function Page(): JSX.Element {
 
 	const dispatch = useDispatch();
 
-	const { body } = useSelector((state: RootState) => state.profile);
-	console.log('body', body);
-
 	const [updateUsername] = useUpdateUsernameMutation();
-
-	useEffect(() => {
-		if (body) {
-			setFirstName(body.firstName);
-			setLastName(body.lastName);
-		}
-	}, [body]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

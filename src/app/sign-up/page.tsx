@@ -13,8 +13,6 @@ export default function Page() {
 	const [password, setPassword] = useState('');
 	const [validation, setValidation] = useState(false);
 
-	const router = useRouter();
-
 	const [signup, { isLoading }] = useSignupMutation();
 
 	const handleSubmit = async (e: React.FormEvent) => {
